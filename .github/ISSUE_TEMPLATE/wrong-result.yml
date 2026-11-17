@@ -1,0 +1,30 @@
+name: It got a video wrong
+description: A case where FirstFrame's finding was wrong or misleading. These are the most useful reports we get.
+labels: [failure-case]
+body:
+  - type: input
+    id: link
+    attributes:
+      label: Link to the video or the FirstFrame report
+    validations:
+      required: true
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Which check was wrong?
+      options:
+        - Earliest copy
+        - Where it was filmed
+        - Time of day
+        - Weather
+        - Tampering signals
+        - The card
+    validations:
+      required: true
+  - type: textarea
+    id: truth
+    attributes:
+      label: What's actually true, and how do you know?
+      description: Sources help us turn this into a regression test.
+    validations:
+      required: true

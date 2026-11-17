@@ -1,0 +1,10 @@
+node_modules
+.next
+.firstframe
+.git
+.env
+.env.*
+!.env.example
+coverage
+docs
+tests
