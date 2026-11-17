@@ -1,0 +1,63 @@
+{
+  "name": "firstframe",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Verify any viral video in 60 seconds. Original upload, geolocation, chronolocation, weather and tamper signals, on one shareable card.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "predev": "node scripts/copy-vendor.mjs",
+    "dev": "next dev",
+    "prebuild": "node scripts/copy-vendor.mjs",
+    "build": "next build",
+    "start": "next start",
+    "lint": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "ff": "tsx scripts/cli.ts",
+    "models": "tsx scripts/fetch-models.ts",
+    "doctor": "tsx scripts/doctor.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.10.0",
+    "@fontsource/geist-mono": "^5.3.0",
+    "@fontsource/geist-sans": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
+    "@resvg/resvg-js": "^2.6.2",
+    "@supabase/supabase-js": "^2.119.0",
+    "maplibre-gl": "^6.19.0",
+    "nanoid": "^6.0.2",
+    "next": "16.4.6",
+    "node-html-parser": "^9.0.7",
+    "onnxruntime-node": "^1.31.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "satori": "^0.63.2",
+    "sharp": "^0.35.5",
+    "suncalc": "^2.1.4",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.5",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "tailwindcss": "^4.3.5",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp",
+      "onnxruntime-node",
+      "esbuild",
+      "@tailwindcss/oxide",
+      "unrs-resolver",
+      "@resvg/resvg-js"
+    ]
+  }
+}

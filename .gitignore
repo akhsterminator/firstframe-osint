@@ -1,0 +1,16 @@
+node_modules
+.next
+out
+dist
+.firstframe
+coverage
+*.tsbuildinfo
+next-env.d.ts
+.env
+.env.local
+.env.*.local
+.DS_Store
+.vercel
+.vscode/*
+!.vscode/extensions.json
+public/vendor
