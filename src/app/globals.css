@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0d0d0c;
+  --color-panel: #151513;
+  --color-raised: #1c1c19;
+  --color-line: #2a2925;
+  --color-line-strong: #3a3833;
+  --color-text: #ece9e1;
+  --color-muted: #8f8a80;
+  --color-faint: #5d5a53;
+  --color-paper: #f3f0e8;
+  --color-alert: #ff5b3d;
+  --color-caution: #f0a83a;
+  --color-ok: #4cc38a;
+  --color-info: #8fb3ff;
+
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
+
+  --animate-scan: scan 2.4s ease-in-out infinite;
+  --animate-pulse-dot: pulse-dot 1.4s ease-in-out infinite;
+
+  @keyframes scan {
+    0%, 100% { transform: translateY(-100%); opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    50% { transform: translateY(100%); }
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.8); }
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--color-ink);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+  }
+  ::selection {
+    background: var(--color-alert);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-info);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .rule {
+    border-top: 1px solid var(--color-line);
+  }
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+}
+
+.maplibregl-ctrl-attrib {
+  font-family: var(--font-mono);
+  font-size: 10px !important;
+}
