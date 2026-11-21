@@ -84,3 +84,54 @@ export function blueskyTidTime(tid: string): number | undefined {
   const micros = n >> 10n;
   return checked(micros / 1000n);
 }
+
+export interface IdAnatomy {
+  /** The ID as the platform stores it, in binary, most significant bit first. */
+  bits: string;
+  /** Range of `bits` (inclusive start, exclusive end) that holds the timestamp. */
+  timestamp: [number, number];
+  /** Plain-language recipe, e.g. "first 41 bits = milliseconds since 4 Nov 2010". */
+  recipe: string;
+  unit: "ms" | "s" | "µs";
+}
+
+function pad(n: bigint, width: number): string {
+  return n.toString(2).padStart(width, "0").slice(-width);
+}
+
+/**
+ * How the timestamp sits inside an ID, for showing the decode step by step.
+ * Returns undefined for platforms whose IDs don't carry a time.
+ */
+export function idAnatomy(platform: string, id: string): IdAnatomy | undefined {
+  try {
+    switch (platform) {
+      case "x": {
+        const n = BigInt(id);
+        return { bits: pad(n, 64), timestamp: [1, 42], recipe: "Bits 1–41 count milliseconds since 4 Nov 2010, X's own epoch. The rest identify the server and sequence.", unit: "ms" };
+      }
+      case "tiktok": {
+        const n = BigInt(id);
+        return { bits: pad(n, 64), timestamp: [0, 32], recipe: "The first 32 bits are a plain Unix timestamp in seconds. The rest are a counter and a random part.", unit: "s" };
+      }
+      case "instagram":
+      case "threads": {
+        const n = /^\d+$/.test(id) ? BigInt(id) : instagramShortcodeToId(id);
+        if (n === undefined) return undefined;
+        return { bits: pad(n, 64), timestamp: [0, 41], recipe: "The shortcode is base-64 for a 64-bit ID. Its first 41 bits count milliseconds since 22 Aug 2011, Instagram's epoch.", unit: "ms" };
+      }
+      case "mastodon": {
+        const n = BigInt(id);
+        return { bits: pad(n, 64), timestamp: [0, 48], recipe: "The first 48 bits are milliseconds since 1970. The last 16 make the ID unique.", unit: "ms" };
+      }
+      case "bluesky": {
+        let n = 0n;
+        for (const ch of id) n = n * 32n + BigInt(TID_ALPHABET.indexOf(ch));
+        return { bits: pad(n, 64), timestamp: [1, 54], recipe: "The record key is a TID: 13 base-32 characters holding microseconds since 1970 in bits 1–53, then a clock ID.", unit: "µs" };
+      }
+    }
+  } catch {
+    return undefined;
+  }
+  return undefined;
+}
