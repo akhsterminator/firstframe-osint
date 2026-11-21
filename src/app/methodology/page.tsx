@@ -135,6 +135,7 @@ const SECTIONS: { id: string; title: string; body: React.ReactNode }[] = [
         <li>No people search. We link to posts, not accounts, and don't collect usernames or profile data.</li>
         <li>No licence-plate reading. The vision prompt tells the model not to read plate numbers.</li>
         <li>GPS from file metadata is rounded to about 100 m before it's shown.</li>
+        <li>On the public site, videos are processed in your browser tab and never uploaded. A Claude key, if you add one, is stored in your browser and sent only to api.anthropic.com, along with the face-blurred frames.</li>
         <li>No verdicts. Every result is a signal with its evidence and its limits.</li>
       </ul>
     ),

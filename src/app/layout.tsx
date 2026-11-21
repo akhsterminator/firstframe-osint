@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./globals.css";
+import { asset } from "@/lib/web/paths";
 
 const geist = localFont({
   src: [
@@ -31,16 +32,16 @@ const instrument = localFont({
   display: "swap",
 });
 
-const base = process.env.PUBLIC_BASE_URL ?? "http://localhost:3000";
+const site = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(base),
-  title: { default: "FirstFrame: verify any viral video in 60 seconds", template: "%s · FirstFrame" },
+  metadataBase: new URL(site),
+  title: { default: "FirstFrame: everyone shared it, nobody checked", template: "%s · FirstFrame" },
   description:
-    "Paste a TikTok, X or Instagram link. FirstFrame finds the earliest copy online, works out where and when it was filmed, checks the weather, and looks for signs of tampering.",
-  openGraph: { type: "website", siteName: "FirstFrame", images: ["/api/reports/sample/card?format=og"] },
+    "Check a viral video in a minute: when it was really posted, where it was filmed, whether the sun and the weather match, and signs of tampering.",
+  openGraph: { type: "website", siteName: "FirstFrame" },
   twitter: { card: "summary_large_image" },
-  icons: { icon: "/icon.svg" },
+  icons: { icon: asset("/icon.svg") },
 };
 
 export const viewport: Viewport = { themeColor: "#0d0d0c" };
