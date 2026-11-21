@@ -2,6 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 import sharp, { type OverlayOptions, type Sharp } from "sharp";
 import type { InferenceSession } from "onnxruntime-node";
+import { nms, type Box } from "./select";
+
+export { nms, type Box };
 
 /**
  * Face *detection* for blurring. This module returns rectangles and nothing
@@ -9,18 +12,9 @@ import type { InferenceSession } from "onnxruntime-node";
  * here before it is stored, so an unblurred face never leaves the worker.
  */
 
-export interface Box {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  score: number;
-}
-
 const INPUT_W = 320;
 const INPUT_H = 240;
 const SCORE_THRESHOLD = 0.55;
-const IOU_THRESHOLD = 0.3;
 
 let session: Promise<InferenceSession> | undefined;
 
@@ -83,22 +77,6 @@ async function detectIn(img: Sharp, offsetX: number, offsetY: number, w: number,
     found.push({ x: x1, y: y1, w: x2 - x1, h: y2 - y1, score });
   }
   return found;
-}
-
-function iou(a: Box, b: Box): number {
-  const x1 = Math.max(a.x, b.x);
-  const y1 = Math.max(a.y, b.y);
-  const x2 = Math.min(a.x + a.w, b.x + b.w);
-  const y2 = Math.min(a.y + a.h, b.y + b.h);
-  const inter = Math.max(0, x2 - x1) * Math.max(0, y2 - y1);
-  return inter / (a.w * a.h + b.w * b.h - inter || 1);
-}
-
-export function nms(boxes: Box[], threshold = IOU_THRESHOLD): Box[] {
-  const sorted = [...boxes].sort((a, b) => b.score - a.score);
-  const keep: Box[] = [];
-  for (const b of sorted) if (keep.every((k) => iou(k, b) < threshold)) keep.push(b);
-  return keep;
 }
 
 /**

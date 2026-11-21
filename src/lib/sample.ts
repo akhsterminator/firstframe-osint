@@ -1,10 +1,7 @@
-import fs from "node:fs/promises";
-import path from "node:path";
 import { chronolocate } from "./chrono/sun";
 import { buildFindings } from "./findings";
 import { compileQuery, overpassTurboUrl } from "./geo/compile";
-import { emptyStages } from "./pipeline/run";
-import type { Store } from "./store";
+import { emptyStages } from "./stages";
 import type { MapFeature, FeatureRelation, Report, SceneAnalysis } from "./types";
 import { osmBrowseUrl } from "./util/geo";
 
@@ -194,11 +191,4 @@ export function sampleReport(): Report {
 
   report.findings = buildFindings(report, { lat: 52.0559, lon: -2.7155, label: "Hereford, Herefordshire", bbox: [52.02, -2.77, 52.09, -2.67] });
   return report;
-}
-
-/** Put the sample's frame where the store can serve it. */
-export async function ensureSampleAssets(store: Store): Promise<void> {
-  if (await store.getFile("sample/hero.jpg")) return;
-  const buf = await fs.readFile(path.resolve(/* turbopackIgnore: true */ process.cwd(), "assets/sample/hero.jpg"));
-  await store.putFile("sample/hero.jpg", buf, "image/jpeg");
 }

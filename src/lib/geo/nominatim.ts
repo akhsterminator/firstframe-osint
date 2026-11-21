@@ -1,4 +1,4 @@
-import { config } from "../config";
+import { settings } from "../runtime";
 import { httpJson } from "../util/http";
 import type { SearchArea } from "./compile";
 
@@ -21,7 +21,7 @@ export interface Geocoded {
 /** Nominatim's usage policy allows one request a second; we make at most one per report. */
 export async function geocode(place: string): Promise<Geocoded | undefined> {
   const qs = new URLSearchParams({ q: place, format: "jsonv2", limit: "1", addressdetails: "1" });
-  const hits = await httpJson<NominatimHit[]>(`${config.nominatimUrl}/search?${qs}`, {
+  const hits = await httpJson<NominatimHit[]>(`${settings.nominatimUrl}/search?${qs}`, {
     timeoutMs: 10_000,
     headers: { "accept-language": "en" },
   });
@@ -50,7 +50,7 @@ interface ReverseHit {
 /** Town-level name for a point, e.g. "Bewdley, Worcestershire". */
 export async function reverseGeocode(lat: number, lon: number): Promise<string | undefined> {
   const qs = new URLSearchParams({ lat: lat.toFixed(6), lon: lon.toFixed(6), format: "jsonv2", zoom: "14", addressdetails: "1" });
-  const hit = await httpJson<ReverseHit>(`${config.nominatimUrl}/reverse?${qs}`, { timeoutMs: 8_000, headers: { "accept-language": "en" } });
+  const hit = await httpJson<ReverseHit>(`${settings.nominatimUrl}/reverse?${qs}`, { timeoutMs: 8_000, headers: { "accept-language": "en" } });
   const a = hit.address ?? {};
   const place = a.city ?? a.town ?? a.village ?? a.suburb ?? a.municipality ?? a.hamlet;
   const area = a.county ?? a.state_district ?? a.state ?? a.country;

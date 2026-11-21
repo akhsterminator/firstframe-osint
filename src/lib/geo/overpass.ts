@@ -1,4 +1,4 @@
-import { config } from "../config";
+import { settings } from "../runtime";
 import { HttpError, http, isTimeout } from "../util/http";
 
 export interface OsmElement {
@@ -21,7 +21,7 @@ export function position(el: OsmElement): { lat: number; lon: number } | undefin
  * Public Overpass servers are shared, volunteer-run infrastructure. We send one
  * query at a time, identify ourselves, and move to the next mirror on 429/504.
  */
-export async function runOverpass(query: string, endpoints = config.overpassEndpoints): Promise<OsmElement[]> {
+export async function runOverpass(query: string, endpoints = settings.overpassEndpoints): Promise<OsmElement[]> {
   let lastError: unknown;
   for (const url of endpoints) {
     try {

@@ -18,6 +18,9 @@ import { extractKeyframes } from "../media/keyframes";
 import { durationOf, probe, videoStream } from "../media/probe";
 import type { Provider } from "../provenance/hits";
 import type { PageDate } from "../provenance/page-date";
+import { emptyStages } from "../stages";
+
+export { emptyStages };
 import { runProvenance } from "../provenance";
 import type { Store } from "../store";
 import type {
@@ -179,7 +182,7 @@ export async function runPipeline(report: Report, source: PipelineSource, deps: 
     );
 
     const sceneP = stage("scene", async () => {
-      const analyse = deps.scene ?? (config.anthropicKey ? (i: SceneInput) => analyseScene(i, new Anthropic()) : undefined);
+      const analyse = deps.scene ?? (config.anthropicKey ? (i: SceneInput) => analyseScene(i, new Anthropic(), config.visionModel) : undefined);
       if (!analyse) throw new Skip("Set ANTHROPIC_API_KEY to read the scene");
       return analyse({
         platform: report.source.platform,
@@ -187,7 +190,7 @@ export async function runPipeline(report: Report, source: PipelineSource, deps: 
         caption: report.source.caption,
         claimPlace: report.claim?.place,
         claimDate: report.claim?.date,
-        frames: report.frames.map((f) => ({ index: f.index, t: f.t, jpeg: frameJpegs.get(f.id)! })),
+        frames: report.frames.map((f) => ({ index: f.index, t: f.t, base64: frameJpegs.get(f.id)!.toString("base64") })),
       });
     });
 
@@ -299,17 +302,4 @@ export function pickDate(
     return { date: isoDay(report.source.postedAt), basis: report.source.postedAtSource === "file" ? "file" : "post" };
   }
   return undefined;
-}
-
-export function emptyStages(): ReportStages {
-  return {
-    ingest: { status: "pending" },
-    keyframes: { status: "pending" },
-    provenance: { status: "pending" },
-    scene: { status: "pending" },
-    geolocation: { status: "pending" },
-    chronolocation: { status: "pending" },
-    weather: { status: "pending" },
-    integrity: { status: "pending" },
-  };
 }

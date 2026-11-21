@@ -1,5 +1,6 @@
 import { liveReport } from "../pipeline/jobs";
-import { ensureSampleAssets, sampleReport } from "../sample";
+import { sampleReport } from "../sample";
+import { ensureSampleAssets } from "./sample-assets";
 import { getStore } from "../store";
 import type { Report } from "../types";
 

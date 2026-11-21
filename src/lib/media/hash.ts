@@ -1,5 +1,7 @@
 import sharp from "sharp";
 
+export { hamming } from "./select";
+
 /** 64-bit difference hash. Robust to scaling and recompression, cheap to compare. */
 export async function dhash(input: Buffer): Promise<string> {
   const { data } = await sharp(input)
@@ -16,16 +18,6 @@ export async function dhash(input: Buffer): Promise<string> {
     }
   }
   return bits.toString(16).padStart(16, "0");
-}
-
-export function hamming(a: string, b: string): number {
-  let x = BigInt(`0x${a}`) ^ BigInt(`0x${b}`);
-  let n = 0;
-  while (x) {
-    n += Number(x & 1n);
-    x >>= 1n;
-  }
-  return n;
 }
 
 /**

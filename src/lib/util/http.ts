@@ -1,4 +1,4 @@
-import { config } from "../config";
+import { isBrowser, settings } from "../runtime";
 
 export class HttpError extends Error {
   constructor(
@@ -23,7 +23,8 @@ export async function http(url: string, opts: FetchOptions = {}): Promise<Respon
   const res = await fetch(url, {
     ...rest,
     signal,
-    headers: { "user-agent": config.userAgent, ...headers },
+    // Browsers set their own user agent, and a custom one would force a CORS preflight.
+    headers: isBrowser ? headers : { "user-agent": settings.userAgent, ...headers },
   });
   const redirect = rest.redirect === "manual" && res.status >= 300 && res.status < 400;
   if (!res.ok && !redirect) {

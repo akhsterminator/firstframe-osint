@@ -1,4 +1,5 @@
 import path from "node:path";
+import { settings } from "./runtime";
 
 function str(name: string): string | undefined {
   const v = process.env[name];
@@ -31,7 +32,7 @@ export const config = {
     return str("ANTHROPIC_API_KEY");
   },
   get visionModel() {
-    return str("FF_VISION_MODEL") ?? "claude-opus-5-5";
+    return settings.visionModel;
   },
   get serpApiKey() {
     return str("SERPAPI_KEY");
@@ -61,14 +62,10 @@ export const config = {
     return str("SUPABASE_BUCKET") ?? "frames";
   },
   get overpassEndpoints() {
-    return list("OVERPASS_ENDPOINTS", [
-      "https://overpass-api.de/api/interpreter",
-      "https://overpass.private.coffee/api/interpreter",
-      "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
-    ]);
+    return settings.overpassEndpoints;
   },
   get nominatimUrl() {
-    return str("NOMINATIM_URL") ?? "https://nominatim.openstreetmap.org";
+    return settings.nominatimUrl;
   },
   get tileUrl() {
     return str("FF_TILE_URL") ?? "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -107,7 +104,7 @@ export const config = {
     return int("FF_CACHE_HOURS", 24);
   },
   get userAgent() {
-    return str("FF_USER_AGENT") ?? "FirstFrame/0.1 (+https://github.com/akhsterminator/firstframe-osint)";
+    return settings.userAgent;
   },
 };
 
