@@ -19,4 +19,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm test
-      - run: pnpm build
+      - name: Build (server)
+        run: pnpm build
+      - name: Build (static site)
+        run: rm -rf .next && pnpm build
+        env:
+          FF_STATIC: "1"

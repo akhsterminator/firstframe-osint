@@ -20,6 +20,7 @@ You need Node 22, ffmpeg and (for links) yt-dlp. Nothing else is required to run
 ```bash
 pnpm lint
 pnpm test
+pnpm build:static
 ```
 
 Tests never call external services. Each stage takes its dependencies as arguments, so tests pass in stubs (see `tests/pipeline.test.ts`).
@@ -36,7 +37,12 @@ Tests never call external services. Each stage takes its dependencies as argumen
 | `src/lib/geo` | Overpass compiler, ranking, Nominatim |
 | `src/lib/chrono`, `src/lib/weather` | Sun position, weather comparison |
 | `src/lib/integrity` | C2PA, metadata, detector signals |
-| `src/lib/card` | The shareable card (Satori) |
+| `src/lib/card` | The shareable cards (Satori), used by server and browser |
+| `src/lib/web` | Browser-only code: frames from a video element, ONNX Runtime Web face blur, MP4 metadata, BYOK Claude |
+| `src/components/{when,where,verify}` | The three tools on the static site |
+| `src/app/**/*.server.ts(x)` | Server-only routes, left out of the static build |
+
+There are two builds. `pnpm build` is the self-hosted server. `pnpm build:static` is the browser-only site in `out/`; it ignores `*.server.*` files, so anything in a page or component must work without Node. Shared code in `src/lib` must not import Node built-ins unless it's server-only.
 
 ## Adding a reverse-search provider
 
