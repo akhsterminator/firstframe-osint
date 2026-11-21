@@ -9,24 +9,26 @@ export const CARD_SIZES: Record<CardFormat, { width: number; height: number }> =
   og: { width: 1200, height: 630 },
 };
 
-const PAPER = "#F3F0E8";
-const INK = "#141414";
-const MUTED = "#6E6A62";
-const RULE = "#D9D4C7";
-const TONE: Record<Tone, string> = { alert: "#CF3A1E", caution: "#B5720B", ok: "#1E7A4C", neutral: INK };
+export const PAPER = "#F3F0E8";
+export const INK = "#141414";
+export const MUTED = "#6E6A62";
+export const RULE = "#D9D4C7";
+export const TONE: Record<Tone, string> = { alert: "#CF3A1E", caution: "#B5720B", ok: "#1E7A4C", neutral: INK };
 const TONE_WORD: Record<Tone, string> = { alert: "Red flag", caution: "Worth checking", ok: "Checks out", neutral: "Finding" };
 
-const SERIF = "Instrument Serif";
-const SANS = "Geist";
-const MONO = "Geist Mono";
+export const SERIF = "Instrument Serif";
+export const SANS = "Geist";
+export const MONO = "Geist Mono";
 
 export interface CardAssets {
+  /** Footer link; defaults to the report page on `host`. */
+  link?: string;
   hero?: string;
   map?: string;
   host: string;
 }
 
-function Mark({ size = 30 }: { size?: number }) {
+export function Mark({ size = 30 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32">
       <path d="M2 10V2h8M22 2h8v8M30 22v8h-8M10 30H2v-8" stroke={INK} strokeWidth="3" fill="none" />
@@ -35,7 +37,7 @@ function Mark({ size = 30 }: { size?: number }) {
   );
 }
 
-function Corners({ w, h, color = "#FFFFFF", len = 26, inset = 14 }: { w: number; h: number; color?: string; len?: number; inset?: number }) {
+export function Corners({ w, h, color = "#FFFFFF", len = 26, inset = 14 }: { w: number; h: number; color?: string; len?: number; inset?: number }) {
   return (
     <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ position: "absolute", top: 0, left: 0 }}>
       <path
@@ -53,7 +55,7 @@ function Corners({ w, h, color = "#FFFFFF", len = 26, inset = 14 }: { w: number;
   );
 }
 
-function Mono({ children, size = 17, color = MUTED, style }: { children: ReactNode; size?: number; color?: string; style?: CSSProperties }) {
+export function Mono({ children, size = 17, color = MUTED, style }: { children: ReactNode; size?: number; color?: string; style?: CSSProperties }) {
   return (
     <div style={{ display: "flex", fontFamily: MONO, fontSize: size, letterSpacing: size * 0.12, textTransform: "uppercase", color, ...style }}>
       {children}
@@ -135,7 +137,7 @@ function Chip({ label, tone }: { label: string; tone: Tone }) {
   );
 }
 
-function Perforation({ width }: { width: number }) {
+export function Perforation({ width }: { width: number }) {
   const n = Math.floor(width / 16);
   return (
     <div style={{ display: "flex", width, justifyContent: "space-between" }}>
@@ -146,13 +148,13 @@ function Perforation({ width }: { width: number }) {
   );
 }
 
-function Footer({ model, host, width }: { model: CardModel; host: string; width: number }) {
+function Footer({ model, host, link, width }: { model: CardModel; host: string; link?: string; width: number }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18, width }}>
       <Perforation width={width} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width }}>
         <Mono size={14}>Signals, not verdicts · Faces blurred</Mono>
-        <Mono size={14} color={INK} style={{ textTransform: "none", letterSpacing: 0.5 }}>{`${host}/v/${model.id}`}</Mono>
+        <Mono size={14} color={INK} style={{ textTransform: "none", letterSpacing: 0.5 }}>{link ?? `${host}/v/${model.id}`}</Mono>
       </div>
     </div>
   );
@@ -237,7 +239,7 @@ export function Card({ model, assets, format }: { model: CardModel; assets: Card
             <FactCell fact={model.firstSeen} width={(inner - 28) / 2} valueSize={26} />
             <FactCell fact={model.where} width={(inner - 28) / 2} valueSize={26} />
           </div>
-          <Mono size={13} style={{ textTransform: "none", letterSpacing: 0.5 }}>{`${assets.host}/v/${model.id}`}</Mono>
+          <Mono size={13} style={{ textTransform: "none", letterSpacing: 0.5 }}>{assets.link ?? `${assets.host}/v/${model.id}`}</Mono>
         </div>
       </div>
     );
@@ -257,7 +259,7 @@ export function Card({ model, assets, format }: { model: CardModel; assets: Card
       <div style={{ display: "flex", flexDirection: "column", gap: story ? 40 : 26 }}>
         <Grid model={model} assets={assets} width={inner} valueSize={story ? 36 : 32} />
         <Signals model={model} />
-        <Footer model={model} host={assets.host} width={inner} />
+        <Footer model={model} host={assets.host} link={assets.link} width={inner} />
       </div>
     </div>
     </div>

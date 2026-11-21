@@ -52,7 +52,12 @@ export function buildFindings(r: Report, claimPoint?: ClaimedPlace): Finding[] {
         detail: `Reverse search across ${prov.providers.filter((p) => p.status === "ok").map((p) => p.provider).join(", ")} found nothing older than this post. That's not proof it's original; new uploads take time to be indexed.`,
       });
     } else if (!ranAny) {
-      add({ stage: "provenance", tone: "neutral", title: "Reverse search not run", detail: "No search provider was configured for this instance." });
+      add({
+        stage: "provenance",
+        tone: "neutral",
+        title: "Look for older copies",
+        detail: "Reverse search didn't run automatically. Paste the first frame into Google Lens, Yandex, Bing or TinEye; most recycled clips turn up within the first page of results.",
+      });
     }
   }
 

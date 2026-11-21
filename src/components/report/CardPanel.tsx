@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Report } from "@/lib/types";
+import { asset } from "@/lib/web/paths";
 
 const FORMATS = [
   { id: "portrait", label: "Post", size: "1080×1350" },
@@ -9,14 +10,20 @@ const FORMATS = [
   { id: "og", label: "Link", size: "1200×630" },
 ] as const;
 
-export function CardPanel({ report }: { report: Report }) {
+/**
+ * `staticBase` points at pre-rendered PNGs (`<base>-portrait.png` etc.) for the
+ * static build, where there's no card endpoint.
+ */
+export function CardPanel({ report, staticBase }: { report: Report; staticBase?: string }) {
   const [copied, setCopied] = useState(false);
   const done = report.status === "done";
   const v = Date.parse(report.updatedAt);
-  const src = `/api/reports/${report.id}/card?format=portrait&v=${v}`;
+  const cardUrl = (format: string, download = false) =>
+    staticBase ? asset(`${staticBase}-${format}.png`) : `/api/reports/${report.id}/card?format=${format}${download ? "&download=1" : `&v=${v}`}`;
+  const src = cardUrl("portrait");
 
   async function share() {
-    const url = `${window.location.origin}/v/${report.id}`;
+    const url = staticBase ? window.location.href : `${window.location.origin}/v/${report.id}`;
     try {
       if (navigator.share) await navigator.share({ url, title: "FirstFrame verification" });
       else {
@@ -48,7 +55,8 @@ export function CardPanel({ report }: { report: Report }) {
           {FORMATS.map((f) => (
             <a
               key={f.id}
-              href={`/api/reports/${report.id}/card?format=${f.id}&download=1`}
+              href={cardUrl(f.id, true)}
+              download={`firstframe-${report.id}-${f.id}.png`}
               className="rounded-lg border border-line px-2 py-2 text-center text-xs transition hover:border-line-strong hover:bg-raised"
               title={`Download ${f.size} PNG`}
             >
