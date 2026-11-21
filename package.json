@@ -1,6 +1,6 @@
 {
   "name": "firstframe",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Verify any viral video in 60 seconds. Original upload, geolocation, chronolocation, weather and tamper signals, on one shareable card.",
   "license": "MIT",
@@ -19,7 +19,10 @@
     "test:watch": "vitest",
     "ff": "tsx scripts/cli.ts",
     "models": "tsx scripts/fetch-models.ts",
-    "doctor": "tsx scripts/doctor.ts"
+    "doctor": "tsx scripts/doctor.ts",
+    "images": "tsx scripts/render-og.tsx",
+    "build:static": "FF_STATIC=1 next build",
+    "prebuild:static": "node scripts/copy-vendor.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.10.0",
@@ -33,6 +36,7 @@
     "next": "16.4.6",
     "node-html-parser": "^9.0.7",
     "onnxruntime-node": "^1.31.1",
+    "onnxruntime-web": "^1.31.1",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "satori": "^0.63.2",
@@ -59,5 +63,6 @@
       "unrs-resolver",
       "@resvg/resvg-js"
     ]
-  }
+  },
+  "packageManager": "pnpm@10.28.0"
 }

@@ -1,11 +1,19 @@
-// MapLibre runs its tile worker from a separate file. Bundlers don't always emit
-// it, so we serve a copy from /public and point MapLibre at it explicitly.
+// Copy runtime files the browser loads directly into /public: the MapLibre tile
+// worker, the ONNX Runtime wasm, the face model and card fonts.
 import fs from "node:fs";
-import { createRequire } from "node:module";
 import path from "node:path";
 
-const require = createRequire(import.meta.url);
-const pkg = path.dirname(require.resolve("maplibre-gl/package.json"));
-const out = path.resolve("public/vendor");
-fs.mkdirSync(out, { recursive: true });
-fs.copyFileSync(path.join(pkg, "dist/maplibre-gl-worker.mjs"), path.join(out, "maplibre-gl-worker.mjs"));
+const pkgDir = (name) => path.resolve("node_modules", name);
+const copy = (from, to) => {
+  fs.mkdirSync(path.dirname(to), { recursive: true });
+  fs.copyFileSync(from, to);
+};
+
+copy(path.join(pkgDir("maplibre-gl"), "dist/maplibre-gl-worker.mjs"), "public/vendor/maplibre-gl-worker.mjs");
+for (const f of ["ort-wasm-simd-threaded.wasm", "ort-wasm-simd-threaded.mjs"]) {
+  copy(path.join(pkgDir("onnxruntime-web"), "dist", f), `public/vendor/ort/${f}`);
+}
+copy("assets/models/ultraface-rfb-320.onnx", "public/models/ultraface-rfb-320.onnx");
+for (const f of fs.readdirSync("assets/fonts").filter((n) => n.endsWith(".woff"))) {
+  copy(path.join("assets/fonts", f), path.join("public/fonts", f));
+}
